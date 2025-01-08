@@ -1,6 +1,6 @@
 import { createWalletClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { abstractTestnet } from "viem/chains";
+import { abstractTestnet, baseSepolia } from "viem/chains";
 import { eip712WalletActions } from "viem/zksync";
 
 export function createViemWalletClient() {
@@ -12,7 +12,7 @@ export function createViemWalletClient() {
 
     return createWalletClient({
         account,
-        chain: abstractTestnet,
+        chain: baseSepolia,
         transport: http(),
     }).extend(eip712WalletActions());
 }
