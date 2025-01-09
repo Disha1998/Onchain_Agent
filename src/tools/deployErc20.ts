@@ -30,7 +30,11 @@ export const deployErc20Tool: ToolConfig = {
         }
     },
     handler: async (args: { name: string, symbol: string, initialSupply?: string }) => {
-        const baseNumber = parseFloat(args.initialSupply || '1000000000'); // 1 billion default
+        // const baseNumber = parseFloat(args.initialSupply || '1000000000'); // 1 billion default
+        // const baseNumber = BigInt(parseFloat(args.initialSupply || '3000000000') * 10 ** 18); // Convert to wei
+    const baseNumber = BigInt(args.initialSupply || '3000000000') * BigInt(10 ** 18);
+
+    console.log(`Base Number (Initial Supply in wei): ${baseNumber.toString()}`);
 
         const publicClient = createViemPublicClient();
         const walletClient = createViemWalletClient();
@@ -45,6 +49,19 @@ export const deployErc20Tool: ToolConfig = {
         const receipt = await publicClient.waitForTransactionReceipt({ hash });
 
         console.log(`Contract deployed at address: ${receipt.contractAddress}`);
+
+
+    
+
+        //call the totalSupply function
+        const totalSupply = await publicClient.readContract({
+           address: receipt.contractAddress as `0x${string}`,
+           abi:ERC20_ABI,
+           functionName:'totalSupply'
+        });
+
+        console.log(`Total Supply:----- ${(totalSupply as bigint).toString()}`);
+
 
         return `${args.name} (${args.symbol}) token deployed successfully at: ${receipt.contractAddress}`;
     }
